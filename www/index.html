@@ -1,0 +1,104 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no">
+    <meta http-equiv="Content-Security-Policy" content="default-src * data: gap: https://ssl.gstatic.com; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
+    <script src="components/loader.js"></script>
+    <link rel="stylesheet" href="components/loader.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="http://cdn.jsdelivr.net/timepicker.js/latest/timepicker.min.css" rel="stylesheet"/>
+    <script src="http://cdn.jsdelivr.net/timepicker.js/latest/timepicker.min.js"></script>
+    <script src="js/cssua.min.js"></script>
+    <script src="js/app.js"></script>
+</head>
+<body>
+    <div data-role="page" id="login-page">
+        <div data-role="header" data-position="fixed" data-theme="c">
+            <h1>Zaloguj się</h1>
+            <a href="#registration-page" data-icon="arrow-r" class="ui-btn-right">Zarejestruj się</a>
+        </div>
+        <div data-role="content">
+            <input id="login" type="text" placeholder="Login">
+            <input id="password" type="password" placeholder="Hasło">
+            <input id="login-button" type="button" value="Zaloguj" onclick="Login()">
+        </div>
+    </div>
+
+    <div data-role="page" id="registration-page">
+        <div data-role="header" data-position="fixed" data-theme="c">
+            <h1>Zarejestruj się</h1>
+            <a href="#login-page" data-icon="arrow-r" class="ui-btn-right">Zaloguj się</a>
+        </div>
+        <div data-role="content">
+            <input id="registration-name" type="text" placeholder="Imię">
+            <input id="registration-surname" type="text" placeholder="Nazwisko">
+            <input id="registration-login" type="text" placeholder="Login">
+            <input id="registration-password" type="password" placeholder="Hasło">
+            <input id="registration-button" type="button" value="Zarejestruj się" onclick="Register()">
+        </div>
+    </div>
+
+    <div data-role="page" id="edit-page">
+        <div data-role="header" data-position="fixed" data-theme="c">
+            <h1>Edytuj</h1>
+            <a href="#list-page" data-icon="back" class="ui-btn-left">Powrót</a>
+        </div>
+        <div data-role="content">
+          <input type="text" id="edit-user" disabled>
+          <input type="text" id="edit-building-number" disabled>
+          <input type="text" id="edit-room-number" disabled>
+          <input placeholder="Data rezerwacji" type="text" onmouseenter="(this.type='date')" onmouseleave="(this.type='text', this.placeholder='Data rezerwacji')" id="edit-date" onchange="">
+          <input placeholder="Godzina początkowa" type="text" onmouseenter="(this.type='time')" onmouseleave="(this.type='text', this.placeholder='Godzina początkowa')" id="edit-startTime" onchange="">
+          <input placeholder="Godzina końcowa" type="text" onmouseenter="(this.type='time')" onmouseleave="(this.type='text', this.placeholder='Godzina końcowa')" id="edit-endTime" onchange="">
+          <input id="" type="button" value="Zmień" onclick="Edit(this.id)">
+          <b id="edit-limit-info"></b>
+        </div>
+    </div>
+
+    <div data-role="page" id="list-page">
+        <div data-role="header" data-position="fixed" data-theme="c">
+            <a href="#login-page" data-icon="arrow-l" class="ui-btn-left">Wyloguj sie</a>
+            <h1>Twoje rezerwacje</h1>
+            <a href="#add-page" data-icon="add" class="ui-btn-right" onclick="ConfigSelection(0)">Rezerwuj</a>
+        </div>
+        <div data-role="content">
+            <ul data-role="listview" data-inset="true" id="reservation-list"></ul>
+        </div>
+    </div>
+
+    <div data-role="page" id="add-room-page">
+        <div data-role="header" data-position="fixed" data-theme="c">
+            <h1>Rezerwuj</h1>
+            <a href="#add-page" data-icon="back" class="ui-btn-left" onclick="ConfigSelection(0)">Powrót</a>
+        </div>
+        <div data-role="content">
+          <input placeholder="Nazwa budynku" type="text" id="add-building">
+          <input placeholder="Numer pokoju" type="text" id="add-room">
+          <input placeholder="Godzina początkowa" type="text" onmouseenter="(this.type='time')" onmouseleave="(this.type='text', this.placeholder='Godzina początkowa')" id="add-startTime">
+          <input placeholder="Godzina końcowa" type="text" onmouseenter="(this.type='time')" onmouseleave="(this.type='text', this.placeholder='Godzina końcowa')" id="add-endTime">
+          <input id="add-button" type="button" value="Stwórz pokój" onclick="AddRoom()">
+        </div>
+      </div>
+
+    <div data-role="page" id="add-page">
+        <div data-role="header" data-position="fixed" data-theme="c">
+            <h1>Rezerwuj</h1>
+            <a href="#list-page" data-icon="back" class="ui-btn-left">Powrót</a>
+            <a onclick="ChangeWindowIfAdmin()" data-icon="plus" class="ui-btn-right">Dodaj pokoj</a>
+        </div>
+        <div data-role="content">
+          <select id="building-number" onchange="ConfigSelection(1)">
+            <option value="" disabled selected hidden>Wybierz budynek</option>
+          </select>
+          <select id="room-number" onchange="AddLimitTimeInfo()">
+            <option value="" disabled selected hidden>Wybierz salę</option>
+          </select>
+          <input placeholder="Data rezerwacji" type="text" onmouseenter="(this.type='date')" onmouseleave="(this.type='text', this.placeholder='Data rezerwacji')" id="date" onchange="ConfigOption(1)">
+          <input placeholder="Godzina początkowa" type="text" onmouseenter="(this.type='time')" onmouseleave="(this.type='text', this.placeholder='Godzina początkowa')" id="startTime" onchange="ConfigOption(1)">
+          <input placeholder="Godzina końcowa" type="text" onmouseenter="(this.type='time')" onmouseleave="(this.type='text', this.placeholder='Godzina końcowa')" id="endTime" onchange="">
+          <input id="add-button" type="button" value="Rezerwuj" onclick="AddReservation()">
+        </div>
+      </div>
+</body>
+</html>
